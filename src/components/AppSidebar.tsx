@@ -6,7 +6,8 @@ import {
   FolderOpen, 
   Receipt, 
   Settings,
-  Building2
+  Building2,
+  LogOut
 } from "lucide-react";
 import {
   Sidebar,
@@ -18,8 +19,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -31,6 +35,7 @@ const navigationItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const { signOut } = useAuth();
   const currentPath = location.pathname;
   
   const isCollapsed = state === "collapsed";
@@ -44,6 +49,10 @@ export function AppSidebar() {
     return isActive(path) 
       ? "bg-blue-100 text-blue-700 font-medium border-r-2 border-blue-500" 
       : "text-gray-700 hover:bg-gray-100 hover:text-gray-900";
+  };
+
+  const handleLogout = async () => {
+    await signOut();
   };
 
   return (
@@ -105,6 +114,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="p-2 border-t">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                className="w-full justify-start gap-3 px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all"
+              >
+                <LogOut className="w-5 h-5 flex-shrink-0" />
+                {!isCollapsed && <span>Logout</span>}
+              </Button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
